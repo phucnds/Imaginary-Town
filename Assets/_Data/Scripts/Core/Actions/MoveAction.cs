@@ -4,48 +4,54 @@ using UnityEngine;
 
 namespace ImaginaryTown.Core
 {
-    public class MoveAction : MonoBehaviour
+    public class MoveAction : BaseAction
     {
+        [Header("Settings")]
+        [SerializeField] private float moveSpeed = 2f;
+        [SerializeField] private float rotateSpeed = 10f;
+        [SerializeField] private float stoppingDistance = .1f;
         [SerializeField] private int maxMoveDistance = 2;
-        [SerializeField] private CharacterPathfinding pathfinding;
 
-        public Transform target;
+        private CharacterPathfinding pathfinding;
 
-        private List<Vector3> positionList = new List<Vector3>();
         private int currentPositionIndex;
-        private bool isActive = false;
+        private List<Vector3> positionList = new List<Vector3>();
+
+        public event Action OnStartMoving;
+        public event Action OnStopMoving;
+
+        private void Awake()
+        {
+            pathfinding = GetComponent<CharacterPathfinding>();
+        }
 
         private void Update()
         {
-
             if (!isActive) return;
 
             Vector3 targetPosition = positionList[currentPositionIndex];
             Vector3 moveDirection = (targetPosition - transform.position).normalized;
 
-            float rotateSpeed = 10f;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDirection), rotateSpeed * Time.deltaTime);
 
-            float stoppingDistance = .1f;
             if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
             {
-                float moveSpeed = 4f;
                 transform.position += moveDirection * moveSpeed * Time.deltaTime;
             }
             else
             {
                 currentPositionIndex++;
 
-                if (ReachedTarget())
+                if (currentPositionIndex >= positionList.Count)
                 {
+                    OnStopMoving?.Invoke();
                     ActionComplete();
                 }
             }
         }
-
-        private void TakeAction(GridPosition gridPosition)
+        
+        public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
         {
-
             List<GridPosition> pathGridPositionList = pathfinding.FindPath(GetGridPosition(), gridPosition, out int pathLength);
 
             currentPositionIndex = 0;
@@ -56,7 +62,13 @@ namespace ImaginaryTown.Core
                 positionList.Add(LevelGrid.Instance.GetWorldPosition(pathGridPosition));
             }
 
-            ActionStart();
+            OnStartMoving?.Invoke();
+            ActionStart(onActionComplete);
+        }
+
+        public override string GetActionName()
+        {
+            return "Move";
         }
 
         private GridPosition GetGridPosition()
@@ -64,27 +76,5 @@ namespace ImaginaryTown.Core
             return LevelGrid.Instance.GetGridPosition(transform.position);
         }
 
-        protected void ActionStart(Action onActionComplete = null)
-        {
-            isActive = true;
-
-        }
-
-        protected void ActionComplete()
-        {
-            isActive = false;
-        }
-
-        [NaughtyAttributes.Button]
-        public void Move()
-        {
-            GridPosition gridPosition = LevelGrid.Instance.GetGridPosition(target.position);
-            TakeAction(gridPosition);
-        }
-
-        public bool ReachedTarget()
-        {
-            return currentPositionIndex >= positionList.Count;
-        }
     }
 }

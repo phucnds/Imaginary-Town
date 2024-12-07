@@ -13,7 +13,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Ground
   - Obstacle
   - 
   - 
@@ -38,6 +38,27 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Ground
+    uniqueID: 3329781593
+    locked: 0
+  - name: Area of Town
+    uniqueID: 2412057925
+    locked: 0
+  - name: Road
+    uniqueID: 149634885
+    locked: 0
+  - name: Building
+    uniqueID: 1800009525
+    locked: 0
+  - name: Wall
+    uniqueID: 1224296051
+    locked: 0
+  - name: Extension
+    uniqueID: 3176930263
+    locked: 0
+  - name: Portal
+    uniqueID: 3725241665
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

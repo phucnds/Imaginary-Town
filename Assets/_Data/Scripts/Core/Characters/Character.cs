@@ -5,6 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(SaveableEntity))]
 public class Character : MonoBehaviour, ISaveable
 {
+    private Transform targetAction;
+
+
     [Serializable]
     struct MoverSaveData
     {

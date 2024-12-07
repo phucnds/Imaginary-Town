@@ -32,7 +32,8 @@ namespace ImaginaryTown.Core
 
         public Vector3 GetWorldPosition(GridPosition gridPostition)
         {
-            return new Vector3(gridPostition.x, 0, gridPostition.z) * cellSize;
+            Vector3 Pos = new Vector3(gridPostition.x, 0, gridPostition.z) * cellSize;
+            return Pos;
         }
 
         public GridPosition GetGridPosition(Vector3 worldposition)
@@ -52,8 +53,8 @@ namespace ImaginaryTown.Core
                     GridPosition gridPostition = new GridPosition(x, z);
 
                     Transform debugTransform = GameObject.Instantiate(debugPrefab, GetWorldPosition(gridPostition), Quaternion.identity);
-                    GridDebugObject gridDebugObject = debugTransform.GetComponent<GridDebugObject>();
-                    gridDebugObject.SetGridObject(GetGridObject(gridPostition));
+                    // GridDebugObject gridDebugObject = debugTransform.GetComponent<GridDebugObject>();
+                    // gridDebugObject.SetGridObject(GetGridObject(gridPostition));
                 }
             }
         }
