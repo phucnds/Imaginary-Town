@@ -13,7 +13,7 @@ public class TilemapObjectSpawner : MonoBehaviour
     [NaughtyAttributes.Button]
     void GenerateObjects()
     {
-        EffectManager.Instance.ClearChild();
+        RoadManager.Instance.ClearChild();
 
         BoundsInt bounds = tilemap.cellBounds;
         TileBase[] allTiles = tilemap.GetTilesBlock(bounds);
@@ -29,7 +29,10 @@ public class TilemapObjectSpawner : MonoBehaviour
                 {
                     Vector3 worldPosition = tilemap.CellToWorld(position) + new Vector3(1, 0, 1) * cellSize / 2;
                     GameObject go = Instantiate(objectPrefab, worldPosition, Quaternion.identity);
-                    go.transform.SetParent(EffectManager.Instance.EffectParent);
+                    go.transform.SetParent(RoadManager.Instance.RoadParent);
+
+                    ChunkManager.Instance.DestroyDuplicate(worldPosition);
+                    
                 }
             }
         }

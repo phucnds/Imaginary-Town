@@ -1,9 +1,51 @@
+using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace ImaginaryTown.Core
 {
     public class InputManager : Singleton<InputManager>
     {
+        [SerializeField] private Camera sceneCamera;
+        [SerializeField] private LayerMask layerMask;
+
+        private Vector3 lastPosition;
+
+        public Action Onclicked, OnExit;
+
+        private void Update()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Onclicked?.Invoke();
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                OnExit?.Invoke();
+            }
+        }
+
+        public bool IsPointerOverUI() => EventSystem.current.IsPointerOverGameObject();
+
+        #region Camera Movement
+
+        public Vector3 GetSelectedMapPosition()
+        {
+            Vector3 mousePos = Input.mousePosition;
+            mousePos.z = sceneCamera.nearClipPlane;
+
+            Ray ray = sceneCamera.ScreenPointToRay(mousePos);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 999, layerMask))
+            {
+                lastPosition = hit.point;
+            }
+
+            return lastPosition;
+
+        }
+
         public Vector2 GetMouseScreenPoint()
         {
             return Input.mousePosition;
@@ -74,6 +116,8 @@ namespace ImaginaryTown.Core
 
             return zoomAmout;
         }
+
+        #endregion
     }
 
 }

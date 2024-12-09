@@ -13,6 +13,17 @@ namespace ImaginaryTown.Core
                 Destroy(tr.gameObject);
             }
         }
+
+        public void DestroyDuplicate(Vector3 pos)
+        {
+            foreach (Transform tr in transform)
+            {
+                if (tr.position == pos)
+                {
+                    Destroy(tr.gameObject);
+                }
+            }
+        }
     }
 }
 
